@@ -1,16 +1,6 @@
-# flutter_juejin
+# 用Flutter技术高仿掘金的项目
 
-A new Flutter project.
+这个项目我会很用心的去作，争取早日完成。也会不断进行更新。
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+# 项目进度
+. 2019-01-16:新建项目库，准备开始写项目，这是自己的一个Flutter练手项目。
