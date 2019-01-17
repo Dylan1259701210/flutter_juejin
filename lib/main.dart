@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget{
     //返回一个Material风格的组件
    return MaterialApp(
       title:'高仿掘金案例',
+      debugShowCheckedModeBanner: false,
        theme:ThemeData(
         splashColor:Colors.transparent,
         bottomAppBarColor: Color.fromRGBO(244, 245,245, 1.0),

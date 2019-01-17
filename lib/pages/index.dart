@@ -1,6 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
+import 'dynamic.dart';
+import 'discovery.dart';
+import 'book.dart';
+import 'mine.dart'; 
+
+
 
 class IndexPage extends StatefulWidget {
   _IndexPageState createState() => _IndexPageState();
@@ -27,7 +33,12 @@ class _IndexPageState extends State<IndexPage> {
   ];
 
   final List tabBodies = [
-    HomePage()
+    HomePage(),
+    DynamicPage(),
+    DiscoveryPage(),
+    BookPage(),
+    MinePage()
+
   ];
   int currentIndex = 0;
   var currentPage;
@@ -44,15 +55,16 @@ class _IndexPageState extends State<IndexPage> {
       backgroundColor: Color.fromRGBO(244, 245, 245, 1.0),
       bottomNavigationBar: BottomNavigationBar(
         type:BottomNavigationBarType.fixed,
-        currentIndex: 0,
+        currentIndex: currentIndex,
         items:bottomTabs,
         onTap: (index){
-          currentIndex = index;
+          setState(() {
+            currentIndex = index;
+            currentPage = tabBodies[currentIndex];            
+          });
         },
       ),
-      body:Center(
-        child:Text('掘金')
-      )
+      body:currentPage,
     );
   }
 }
