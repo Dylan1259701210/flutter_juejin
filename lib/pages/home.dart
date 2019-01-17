@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
       future:getCategories(),
       builder: (context,snapshot){
         if(snapshot.hasData){
-          var tabList = snapshot.data['d']['categoryList'];
+          var tabList =  snapshot.data['d']['categoryList'];
           return CreatePage( tabList:tabList  );
         }else if(snapshot.hasError){
           return Text('error1>>>>>>>>>>>>>>>>>:${snapshot.error}');
@@ -88,10 +88,144 @@ class _CreatePageState extends State<CreatePage> with SingleTickerProviderStateM
             )
           ]
         ),
-        body:Center(
-          child:Text('准备'),
+        body:TabBarView(
+          children: widget.tabList.map((cate){
+            return ArticleList(categories: cate,);
+          }).toList(),
         )
       ),
+    );
+  }
+}
+
+
+class ArticleList extends StatefulWidget {
+  final Map categories;
+
+  ArticleList({Key key, this.categories}):super(key:key);
+
+  _ArticleListState createState() => _ArticleListState();
+}
+
+class _ArticleListState extends State<ArticleList> {
+  List articleList;
+
+  Future getArticleList({int limit =20 ,String category})async{
+      final String url = 'https://timeline-merger-ms.juejin.im/v1/get_entry_by_rank?src=${httpHeaders['X-Juejin-Src']}&uid=${httpHeaders['X-Juejin-Uid']}&device_id=${httpHeaders['X-Juejin-Client']}&token=${httpHeaders['X-Juejin-Token']}&limit=${limit}&category=${category}';
+      //print(url);
+      try{
+        Response response;
+        Dio dio = new Dio();
+        response = await dio.get(Uri.encodeFull(url));
+        if(response.statusCode == 200){
+        
+          return response.data;
+        }else{
+          throw Exception('Failed to load post');
+        }
+      }catch(e){
+        return print(e);
+      }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+     return FutureBuilder(
+       future:getArticleList(category : widget.categories['id']),
+       builder:(context,snapshot){
+         if(snapshot.hasData){
+           articleList = snapshot.data['d']['entrylist'];
+           return ListView.builder(
+             itemCount:articleList.length,
+             itemBuilder: (context,index){
+               var item  = articleList[index];
+               return createItem(item);
+             },
+           );
+         }else if( snapshot.hasError){
+           return Center(
+             child: Text("error2>>>>>>>>>>>>>>>>>>>>>${snapshot.error}"),
+           );
+         }
+         return CupertinoActivityIndicator();
+       }
+     );
+  }
+  // 单个文章
+  Widget createItem(articleInfo){
+    var objectId = articleInfo['originalUrl'].substring(articleInfo['originalUrl'].lastIndexOf('/')+1);
+    return Container(
+      margin : EdgeInsets.only(bottom:10.0),
+      padding: EdgeInsets.only(top:10.0,bottom:10.0),
+      child: FlatButton(
+        padding: EdgeInsets.all(0.0),
+        onPressed: (){},
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: null,
+                  child: Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(articleInfo['user']['avatarLarge']),
+                      ),
+                      Padding(padding: EdgeInsets.only(right:5.0),),
+                      Text(
+                        articleInfo['user']['username'],
+                        style: TextStyle(color:Colors.black),
+                      )
+                    ],
+                  ), 
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                   
+                    FlatButton(
+                      onPressed: null,
+                      child: Text(articleInfo['tags'][0]['title']),
+                    )
+
+                  ],
+                )
+              ],
+            ),
+            ListTile(
+              title:Text(articleInfo['title']),
+              subtitle: Text(
+                articleInfo['summaryInfo'],
+                maxLines:2,
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                FlatButton(
+                  onPressed: null,
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.favorite),
+                      Padding(padding: EdgeInsets.only(right:5.0)),
+                      Text(articleInfo['collectionCount'].toString())
+                    ],
+                  ),
+                ),
+                FlatButton(
+                  onPressed: null,
+                  child: Row(children: <Widget>[
+                    Icon(Icons.message),
+                    Padding(padding: EdgeInsets.only(right:5.0),),
+                    Text(articleInfo['commentsCount'].toString())
+                  ],),
+                )
+              ],
+            )
+          ],
+        ),
+      ),
+      color:Colors.white
     );
   }
 }
