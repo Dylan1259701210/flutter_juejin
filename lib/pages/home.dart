@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import '../config/httpHeaders.dart';
 import 'package:dio/dio.dart';
+import 'articleDetail.dart';
 
 
 
@@ -159,7 +160,14 @@ class _ArticleListState extends State<ArticleList> {
       padding: EdgeInsets.only(top:10.0,bottom:10.0),
       child: FlatButton(
         padding: EdgeInsets.all(0.0),
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(context, CupertinoPageRoute(
+            builder: (context)=>ArticleDetail(
+              objectId: objectId,
+              articleInfo:articleInfo
+            )
+          ));
+        },
         child: Column(
           children: <Widget>[
             Row(
